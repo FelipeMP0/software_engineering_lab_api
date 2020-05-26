@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
-const dbUrl = process.env.MONGO_DB_URL;
+const dbUrl = process.env.MONGODB_URI;
 
 export class DBConfig {
   constructor() {
