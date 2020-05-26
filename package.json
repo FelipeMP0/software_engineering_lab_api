@@ -6,17 +6,6 @@
     "test": "jest --coverage --verbose"
   },
   "dependencies": {
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.1.0",
-    "express": "^4.17.1",
-    "helmet": "^3.22.0",
-    "mongoose": "^5.9.16",
-    "swagger-ui-express": "^4.1.4",
-    "tsc-watch": "^4.2.8"
-  },
-  "devDependencies": {
     "@types/compression": "^1.7.0",
     "@types/cors": "^2.8.6",
     "@types/dotenv": "^8.2.0",
@@ -28,6 +17,17 @@
     "@types/swagger-ui-express": "^4.1.2",
     "@typescript-eslint/eslint-plugin": "^3.0.1",
     "@typescript-eslint/parser": "^3.0.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "eslint": "^7.1.0",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "mongoose": "^5.9.16",
+    "swagger-ui-express": "^4.1.4",
+    "tsc-watch": "^4.2.8"
+  },
+  "devDependencies": {
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
     "jest": "^26.0.1",
