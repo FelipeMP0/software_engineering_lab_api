@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: mongoDB
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=swelab_db
+    ports:
+      - 27017:27017
