@@ -1,0 +1,5 @@
+title: Recrutamento e seleção
+description: Trabalho da disciplina de Laboratório de Engenharia de Software. Curso Análise e Desenvolvimento de Sistemas. Faculdade de Tecnologia de São Paulo.
+openapi: 3.0.3
+servers:
+  description: server

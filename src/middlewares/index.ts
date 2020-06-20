@@ -1,3 +1,4 @@
-import { handleCors, handleBodyRequestParsing, handleCompression, handleLogger } from './common';
+import { handleCors, handleBodyRequestParsing, handleCompression, handleLogger, handleAuth } from './common';
+import { swagger } from './swagger';
 
-export default [handleCors, handleBodyRequestParsing, handleCompression, handleLogger];
+export default [handleCors, handleBodyRequestParsing, handleCompression, handleLogger, handleAuth, swagger];

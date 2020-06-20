@@ -4,6 +4,8 @@ import middleware from './middlewares';
 import errorHandlers from './middlewares/errorHandlers';
 import { TestRouter } from './services/test/routes';
 import { DBConfig } from './config/DbConfig';
+import { UserRouter } from './services/user/routes';
+import { JobOpportunityRouter } from './services/job_opportunity/routes';
 
 class App {
   public app: Application;
@@ -22,6 +24,8 @@ class App {
 
   private setRoutes(): void {
     new TestRouter(this.app);
+    new UserRouter(this.app);
+    new JobOpportunityRouter(this.app);
   }
 }
 

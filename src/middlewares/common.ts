@@ -4,6 +4,7 @@ import parser from 'body-parser';
 import compression from 'compression';
 import helmet from 'helmet';
 import { requestLoggerMiddleware } from './log/logger';
+import { basicAuthMiddleware } from './auth/auth';
 
 export const handleCors = (router: Router): void => {
   router.use(cors({ credentials: true, origin: true }));
@@ -24,4 +25,8 @@ export const handleHelmet = (router: Router): void => {
 
 export const handleLogger = (router: Router): void => {
   router.use(requestLoggerMiddleware);
+};
+
+export const handleAuth = (router: Router): void => {
+  router.use(basicAuthMiddleware);
 };
