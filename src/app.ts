@@ -8,6 +8,7 @@ import { UserRouter } from './services/user/routes';
 import { JobOpportunityRouter } from './services/job_opportunity/routes';
 import { StageRouter } from './services/stage/routes';
 import { SkillRouter } from './services/skill/routes';
+import { DepartmentRouter } from './services/department/routes';
 
 class App {
   public app: Application;
@@ -30,6 +31,7 @@ class App {
     new JobOpportunityRouter(this.app);
     new StageRouter(this.app);
     new SkillRouter(this.app);
+    new DepartmentRouter(this.app);
   }
 }
 
