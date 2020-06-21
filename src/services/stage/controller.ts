@@ -33,8 +33,12 @@ export class StageController {
 
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      await this.stageService.delete(req.params.id);
-      res.status(204).send();
+      const result: boolean = await this.stageService.delete(req.params.id);
+      if (result) {
+        res.status(204).send();
+      } else {
+        res.status(404).send();
+      }
     } catch (e) {
       serverError(e, res);
     }

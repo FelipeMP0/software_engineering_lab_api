@@ -21,7 +21,11 @@ export class JobOpportunityController {
   update = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.jobOpportunityService.update(req.params.id, req.body);
-      res.status(200).json(result);
+      if (result == null) {
+        res.status(404).send();
+      } else {
+        res.status(200).json(result);
+      }
     } catch (e) {
       serverError(e, res);
     }
@@ -30,7 +34,11 @@ export class JobOpportunityController {
   findById = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.jobOpportunityService.findById(req.params.id);
-      res.status(200).json(result);
+      if (result == null) {
+        res.status(404).send();
+      } else {
+        res.status(200).json(result);
+      }
     } catch (e) {
       serverError(e, res);
     }
@@ -47,8 +55,12 @@ export class JobOpportunityController {
 
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      await this.jobOpportunityService.deleteById(req.params.id);
-      res.status(204).send();
+      const result: boolean = await this.jobOpportunityService.deleteById(req.params.id);
+      if (result) {
+        res.status(204).send();
+      } else {
+        res.status(404).send();
+      }
     } catch (e) {
       serverError(e, res);
     }
@@ -57,7 +69,11 @@ export class JobOpportunityController {
   findStagesById = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.jobOpportunityService.findById(req.params.id);
-      res.status(200).json(result?.stages);
+      if (result == null) {
+        res.status(404).send();
+      } else {
+        res.status(200).json(result?.stages);
+      }
     } catch (e) {
       serverError(e, res);
     }
@@ -66,8 +82,11 @@ export class JobOpportunityController {
   saveStages = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.jobOpportunityService.saveStages(req.params.id, req.body);
-      console.log(result);
-      res.status(200).json(result?.stages);
+      if (result == null) {
+        res.status(404).send();
+      } else {
+        res.status(200).json(result?.stages);
+      }
     } catch (e) {
       serverError(e, res);
     }

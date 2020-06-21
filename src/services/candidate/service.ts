@@ -23,8 +23,12 @@ export class CandidateService {
     return await this.candidate.findById(id);
   }
 
-  async delete(id: string): Promise<void> {
-    await this.candidate.deleteOne({ _id: id });
+  async delete(id: string): Promise<boolean> {
+    const exists: boolean = await this.candidate.exists({ _id: id });
+    if (exists) {
+      await this.candidate.deleteOne({ _id: id });
+    }
+    return exists;
   }
 
   async findAll(): Promise<CandidateModel[]> {
@@ -47,10 +51,7 @@ export class CandidateService {
     });
   }
 
-  async saveJobOpportunity(
-    id: string,
-    jobOpportunity: CandidateJobOpportunityEntry,
-  ): Promise<CandidateModel | null | undefined> {
+  async saveJobOpportunity(id: string, jobOpportunity: CandidateJobOpportunityEntry): Promise<CandidateModel | null> {
     const candidate = await this.findById(id);
     if (candidate) {
       const newCandidate = {
@@ -67,5 +68,6 @@ export class CandidateService {
       await this.candidate.update({ _id: id }, newCandidate);
       return await this.findById(id);
     }
+    return candidate;
   }
 }

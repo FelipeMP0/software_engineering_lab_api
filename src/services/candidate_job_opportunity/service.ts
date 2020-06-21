@@ -26,7 +26,11 @@ export class CandidateJobOpportunityService {
     return await new this.candidateJobOpportunity(a).save();
   }
 
-  async delete(id: string): Promise<void> {
-    await this.candidateJobOpportunity.deleteOne({ _id: id });
+  async delete(id: string): Promise<boolean> {
+    const exists: boolean = await this.candidateJobOpportunity.exists({ _id: id });
+    if (exists) {
+      await this.candidateJobOpportunity.deleteOne({ _id: id });
+    }
+    return exists;
   }
 }

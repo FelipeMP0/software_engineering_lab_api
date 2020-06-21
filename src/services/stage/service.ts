@@ -22,7 +22,11 @@ export class StageService {
     return await this.stage.findById(id).populate('skills');
   }
 
-  async delete(id: string): Promise<void> {
-    await this.stage.deleteOne({ _id: id });
+  async delete(id: string): Promise<boolean> {
+    const exists: boolean = await this.stage.exists({ _id: id });
+    if (exists) {
+      await this.stage.deleteOne({ _id: id });
+    }
+    return exists;
   }
 }

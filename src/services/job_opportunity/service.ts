@@ -3,7 +3,6 @@ import { JobOpportunityModel } from './model';
 import { jobOpportunitySchema } from './schema';
 import { StageModel } from '../stage/model';
 import { StageService } from '../stage/service';
-import { StageEntry } from '../stage/entry';
 
 export class JobOpportunityService {
   private jobOpportunity: Model<JobOpportunityModel>;
@@ -40,11 +39,15 @@ export class JobOpportunityService {
     return await this.jobOpportunity.find().populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
-  async deleteById(id: string): Promise<void> {
-    await this.jobOpportunity.deleteOne({ _id: id });
+  async deleteById(id: string): Promise<boolean> {
+    const exists: boolean = await this.jobOpportunity.exists({ _id: id });
+    if (exists) {
+      await this.jobOpportunity.deleteOne({ _id: id });
+    }
+    return exists;
   }
 
-  async saveStages(id: string, stage: StageModel): Promise<JobOpportunityModel | null | undefined> {
+  async saveStages(id: string, stage: StageModel): Promise<JobOpportunityModel | null> {
     const jobOpportunity = await this.findById(id);
     if (jobOpportunity) {
       const newJob = {
@@ -58,5 +61,6 @@ export class JobOpportunityService {
       await this.jobOpportunity.update({ _id: id }, newJob);
       return await this.findById(id);
     }
+    return jobOpportunity;
   }
 }
