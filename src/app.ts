@@ -6,6 +6,8 @@ import { TestRouter } from './services/test/routes';
 import { DBConfig } from './config/DbConfig';
 import { UserRouter } from './services/user/routes';
 import { JobOpportunityRouter } from './services/job_opportunity/routes';
+import { StageRouter } from './services/stage/routes';
+import { SkillRouter } from './services/skill/routes';
 
 class App {
   public app: Application;
@@ -26,6 +28,8 @@ class App {
     new TestRouter(this.app);
     new UserRouter(this.app);
     new JobOpportunityRouter(this.app);
+    new StageRouter(this.app);
+    new SkillRouter(this.app);
   }
 }
 

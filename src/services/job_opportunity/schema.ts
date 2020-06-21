@@ -12,6 +12,7 @@ const schema: Schema = new Schema(
       required: true,
       enum: [Department.HR, Department.SOFTWARE_DEVELOPMENT, Department.SALES],
     },
+    stages: [{ type: Schema.Types.ObjectId, ref: 'STAGE' }],
   },
   { timestamps: true },
 );
