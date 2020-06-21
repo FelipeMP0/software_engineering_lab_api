@@ -14,5 +14,6 @@ export class UserRouter implements BaseRouter {
 
   initRoute(): void {
     this.app.post('/users', this.userController.save);
+    this.app.get('/users/evaluators', this.userController.findAllEvaluators);
   }
 }

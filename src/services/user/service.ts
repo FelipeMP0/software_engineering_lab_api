@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { UserModel } from './model';
+import { UserModel, Role } from './model';
 import { userSchema } from './schema';
 import { Base64 } from 'js-base64';
 
@@ -20,5 +20,9 @@ export class UserService {
     const username = usernameAndPassword[0];
     const password = usernameAndPassword[1];
     return await this.user.findOne({ username: username, password: password });
+  }
+
+  async findAllEvaluators(): Promise<UserModel[]> {
+    return await this.user.find();
   }
 }

@@ -13,13 +13,13 @@ export class StageService {
     this.skillService = new SkillService();
   }
 
-  async save(stage: StageEntry): Promise<StageModel> {
+  async save(stage: StageModel): Promise<StageModel> {
     return await new this.stage(stage).save();
   }
 
-  async update(id: string, stage: StageEntry): Promise<StageModel | null> {
+  async update(id: string, stage: StageModel): Promise<StageModel | null> {
     await this.stage.update({ _id: id }, stage);
-    return await this.stage.findById(id);
+    return await this.stage.findById(id).populate('skills');
   }
 
   async delete(id: string): Promise<void> {
