@@ -4,7 +4,7 @@ import { StageModel } from './model';
 const schema: Schema = new Schema(
   {
     id: Object,
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     description: { type: String, required: true },
     skills: [{ type: Schema.Types.ObjectId, ref: 'SKILL', required: true, autopoulate: true }],
   },
