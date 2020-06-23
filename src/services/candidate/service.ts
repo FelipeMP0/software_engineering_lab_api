@@ -1,5 +1,7 @@
 import { CandidateModel } from './model';
 import { Model } from 'mongoose';
+import base64 from 'base64topdf';
+import { v4 as uuidv4 } from 'uuid';
 import { candidateSchema } from './schema';
 import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
 import { CandidateJobOpportunityEntry } from '../candidate_job_opportunity/entry';
@@ -67,6 +69,46 @@ export class CandidateService {
       newCandidate.jobOpportunities.push(savedJob);
       await this.candidate.update({ _id: id }, newCandidate);
       return await this.findById(id);
+    }
+    return candidate;
+  }
+
+  async uploadResume(id: string, file: Express.Multer.File): Promise<void> {
+    const base64Resume: string = file.buffer.toString('base64');
+    const candidate = await this.findById(id);
+    if (candidate) {
+      const newCandidate = {
+        name: candidate.name,
+        cpf: candidate.cpf,
+        address: candidate.address,
+        links: candidate.links,
+        jobOpportunities: candidate.jobOpportunities,
+        base64Resume: base64Resume,
+      };
+      await this.candidate.update({ _id: id }, newCandidate);
+    }
+  }
+
+  async downloadResume(id: string): Promise<string | undefined> {
+    const candidate = await this.candidate.findById(id).select('base64Resume -_id');
+    if (candidate) {
+      return candidate.base64Resume;
+    }
+  }
+
+  async deleteResume(id: string): Promise<CandidateModel | null> {
+    let candidate = await this.findById(id);
+    if (candidate) {
+      const newCandidate = {
+        name: candidate.name,
+        cpf: candidate.cpf,
+        address: candidate.address,
+        links: candidate.links,
+        jobOpportunities: candidate.jobOpportunities,
+        base64Resume: '',
+      };
+      await this.candidate.update({ _id: id }, newCandidate);
+      candidate = await this.findById(id);
     }
     return candidate;
   }

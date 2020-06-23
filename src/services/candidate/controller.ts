@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CandidateService } from './service';
 import { serverError } from '../../utils/errorHandler';
+import fs from 'fs';
 
 export class CandidateController {
   private candidateService: CandidateService;
@@ -73,6 +74,46 @@ export class CandidateController {
         res.status(404).send();
       } else {
         res.status(200).json(result?.jobOpportunities);
+      }
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  uploadResumeFile = async (req: Request, res: Response): Promise<void> => {
+    try {
+      await this.candidateService.uploadResume(req.params.id, req.file);
+      res.status(201).send();
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  downloadResumeFile = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.candidateService.downloadResume(req.params.id);
+      if (result) {
+        const download = Buffer.from(result, 'base64');
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': 'attachment; filename="resume.pdf"',
+        });
+        res.end(download);
+      } else {
+        res.status(404).send();
+      }
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  deleteResumeFile = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.candidateService.deleteResume(req.params.id);
+      if (result == null) {
+        res.status(404).send();
+      } else {
+        res.status(204).send();
       }
     } catch (e) {
       serverError(e, res);

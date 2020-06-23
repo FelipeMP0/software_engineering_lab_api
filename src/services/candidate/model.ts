@@ -7,4 +7,5 @@ export interface CandidateModel extends Document {
   address: string;
   links: string[];
   jobOpportunities: CandidateJobOpportunityModel[];
+  base64Resume: string;
 }
