@@ -35,7 +35,7 @@ export class CandidateService {
 
   async findAll(): Promise<CandidateModel[]> {
     return await this.candidate.find().populate({
-      path: 'jobOpportunities -base64Resume',
+      path: 'jobOpportunities',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
         populate: { path: 'evaluator stage', populate: { path: 'skills' } },
@@ -45,7 +45,7 @@ export class CandidateService {
 
   async findById(id: string): Promise<CandidateModel | null> {
     return await this.candidate.findById(id).populate({
-      path: 'jobOpportunities -base64Resume',
+      path: 'jobOpportunities',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
         populate: { path: 'evaluator stage', populate: { path: 'skills' } },
@@ -75,7 +75,7 @@ export class CandidateService {
 
   async uploadResume(id: string, file: Express.Multer.File): Promise<void> {
     const base64Resume: string = file.buffer.toString('base64');
-    const candidate = await this.findById(id);
+    const candidate = await this.candidate.findById(id).select('+base64Resume');
     if (candidate) {
       const newCandidate = {
         name: candidate.name,
@@ -97,7 +97,7 @@ export class CandidateService {
   }
 
   async deleteResume(id: string): Promise<CandidateModel | null> {
-    let candidate = await this.findById(id);
+    let candidate = await this.candidate.findById(id).select('+base64Resume');
     if (candidate) {
       const newCandidate = {
         name: candidate.name,

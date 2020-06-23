@@ -24,5 +24,6 @@ export class CandidateRouter implements BaseRouter {
     this.app.post('/candidates/:id/job-opportunities', this.candidateController.saveJobOpportunity);
     this.app.post('/candidates/:id/resume', upload.single('resume'), this.candidateController.uploadResumeFile);
     this.app.get('/candidates/:id/resume', this.candidateController.downloadResumeFile);
+    this.app.delete('/candidates/:id/resume', this.candidateController.deleteResumeFile);
   }
 }
