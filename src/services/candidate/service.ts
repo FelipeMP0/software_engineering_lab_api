@@ -90,7 +90,7 @@ export class CandidateService {
   }
 
   async downloadResume(id: string): Promise<string | undefined> {
-    const candidate = await this.candidate.findById(id).select('base64Resume -_id');
+    const candidate = await this.candidate.findById(id).select('+base64Resume -_id');
     if (candidate) {
       return candidate.base64Resume;
     }
