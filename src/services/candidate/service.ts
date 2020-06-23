@@ -35,20 +35,20 @@ export class CandidateService {
 
   async findAll(): Promise<CandidateModel[]> {
     return await this.candidate.find().populate({
-      path: 'jobOpportunities',
+      path: 'jobOpportunities -base64Resume',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
-        populate: { path: 'evaluator stage -base64Resume', populate: { path: 'skills' } },
+        populate: { path: 'evaluator stage', populate: { path: 'skills' } },
       },
     });
   }
 
   async findById(id: string): Promise<CandidateModel | null> {
     return await this.candidate.findById(id).populate({
-      path: 'jobOpportunities',
+      path: 'jobOpportunities -base64Resume',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
-        populate: { path: 'evaluator stage -base64Resume', populate: { path: 'skills' } },
+        populate: { path: 'evaluator stage', populate: { path: 'skills' } },
       },
     });
   }
