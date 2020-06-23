@@ -38,7 +38,7 @@ export class CandidateService {
       path: 'jobOpportunities',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
-        populate: { path: 'evaluator stage -base64resume', populate: { path: 'skills' } },
+        populate: { path: 'evaluator stage -base64Resume', populate: { path: 'skills' } },
       },
     });
   }
