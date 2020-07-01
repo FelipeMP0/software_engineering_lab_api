@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UserService } from '../../services/user/service';
 
 const basicAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  if (req.url === '/users' || (req.url.endsWith('/resume') && req.method === 'GET')) {
+  if (req.url === '/users') {
     next();
     return;
   }

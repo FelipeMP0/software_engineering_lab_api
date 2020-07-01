@@ -1,9 +1,6 @@
 import { CandidateModel } from './model';
 import { Model } from 'mongoose';
-import base64 from 'base64topdf';
-import { v4 as uuidv4 } from 'uuid';
 import { candidateSchema } from './schema';
-import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
 import { CandidateJobOpportunityEntry } from '../candidate_job_opportunity/entry';
 import { CandidateJobOpportunityService } from '../candidate_job_opportunity/service';
 
@@ -61,9 +58,7 @@ export class CandidateService {
         cpf: candidate.cpf,
         address: candidate.address,
         links: candidate.links,
-        jobOpportunities: candidate.jobOpportunities
-          ? candidate.jobOpportunities
-          : new Array<CandidateJobOpportunityModel>(),
+        jobOpportunities: candidate.jobOpportunities,
       };
       const savedJob = await this.candidateJobOpportunityService.save(jobOpportunity);
       newCandidate.jobOpportunities.push(savedJob);
@@ -111,5 +106,10 @@ export class CandidateService {
       candidate = await this.findById(id);
     }
     return candidate;
+  }
+
+  async findWithStageEvaluatorId(id: string): Promise<CandidateModel | null> {
+    const candidateJobOpportunity = await this.candidateJobOpportunityService.findWithStageEvaluatorId(id);
+    return await this.candidate.findOne({ jobOpportunities: candidateJobOpportunity?._id });
   }
 }

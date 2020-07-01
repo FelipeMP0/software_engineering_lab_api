@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
 
 export interface CandidateModel extends Document {
@@ -6,6 +6,6 @@ export interface CandidateModel extends Document {
   cpf: string;
   address: string;
   links: string[];
-  jobOpportunities: CandidateJobOpportunityModel[];
+  jobOpportunities: Types.Array<CandidateJobOpportunityModel>;
   base64Resume: string;
 }

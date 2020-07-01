@@ -33,4 +33,8 @@ export class CandidateJobOpportunityService {
     }
     return exists;
   }
+
+  async findWithStageEvaluatorId(stageEvaluatorId: string): Promise<CandidateJobOpportunityModel | null> {
+    return await this.candidateJobOpportunity.findOne({ stageEvaluatorList: stageEvaluatorId });
+  }
 }

@@ -54,7 +54,7 @@ export class JobOpportunityService {
         name: jobOpportunity.name,
         department: jobOpportunity.department,
         description: jobOpportunity.description,
-        stages: jobOpportunity.stages ? jobOpportunity.stages : new Array<StageModel>(),
+        stages: jobOpportunity.stages,
       };
       const savedStage = await this.stageService.save(stage);
       newJob.stages.push(savedStage);
@@ -62,5 +62,9 @@ export class JobOpportunityService {
       return await this.findById(id);
     }
     return jobOpportunity;
+  }
+
+  async findWithStageId(stageId: string): Promise<JobOpportunityModel | null> {
+    return await this.jobOpportunity.findOne({ stages: stageId });
   }
 }
