@@ -12,6 +12,7 @@ import { DepartmentRouter } from './services/department/routes';
 import { CandidateRouter } from './services/candidate/routes';
 import { CandidateJobOpportunityRouter } from './services/candidate_job_opportunity/routes';
 import { StageEvaluatorRouter } from './services/stage_evaluator/routes';
+import { SkillEvaluationRouter } from './services/skill_evaluation/routes';
 
 class App {
   public app: Application;
@@ -38,6 +39,7 @@ class App {
     new CandidateRouter(this.app);
     new CandidateJobOpportunityRouter(this.app);
     new StageEvaluatorRouter(this.app);
+    new SkillEvaluationRouter(this.app);
   }
 }
 
