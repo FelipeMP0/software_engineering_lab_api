@@ -9,7 +9,7 @@ const candidadeSchemaDefinition: Schema = new Schema(
     address: { type: String, required: true },
     links: [{ type: String, required: true }],
     jobOpportunities: [{ type: Schema.Types.ObjectId, ref: 'CANDIDATE_JOB_OPPORTUNITY', uniqueItems: true }],
-    base64Resume: { type: String, select: false },
+    base64Resume: { type: String },
   },
   { timestamps: true },
 );
