@@ -1,4 +1,5 @@
 import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
+import { CandidateModel } from './model';
 
 export interface CandidatePresenter {
   _id: string;
@@ -9,3 +10,20 @@ export interface CandidatePresenter {
   jobOpportunities: CandidateJobOpportunityModel[];
   hasResume: boolean;
 }
+
+export const toCandidatePresenter = (model: CandidateModel): CandidatePresenter => {
+  let hasResume = false;
+  if (model.base64Resume != null && model.base64Resume !== '') {
+    hasResume = true;
+  }
+  const result: CandidatePresenter = {
+    _id: model._id,
+    name: model.name,
+    cpf: model.cpf,
+    address: model.address,
+    links: model.links,
+    jobOpportunities: model.jobOpportunities,
+    hasResume: hasResume,
+  };
+  return result;
+};

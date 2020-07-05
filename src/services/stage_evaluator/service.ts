@@ -26,7 +26,9 @@ export class StageEvaluatorService {
     const user = await this.userService.authenticate(authToken);
 
     if (user != null) {
-      return await this.stageEvaluator.find({ evaluator: user._id }).populate({ path: 'stage' });
+      return await this.stageEvaluator
+        .find({ evaluator: user._id })
+        .populate({ path: 'stage', populate: { path: 'skills' } });
     }
   }
 

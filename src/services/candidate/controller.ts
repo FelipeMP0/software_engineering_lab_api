@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { CandidateService } from './service';
 import { serverError } from '../../utils/errorHandler';
 import fs from 'fs';
-import { CandidatePresenter } from './presenter';
+import { CandidatePresenter, toCandidatePresenter } from './presenter';
 import { CandidateModel } from './model';
 
 export class CandidateController {
@@ -12,27 +12,10 @@ export class CandidateController {
     this.candidateService = new CandidateService();
   }
 
-  toPresenter(model: CandidateModel): CandidatePresenter {
-    let hasResume = false;
-    if (model.base64Resume != null && model.base64Resume !== '') {
-      hasResume = true;
-    }
-    const result: CandidatePresenter = {
-      _id: model._id,
-      name: model.name,
-      cpf: model.cpf,
-      address: model.address,
-      links: model.links,
-      jobOpportunities: model.jobOpportunities,
-      hasResume: hasResume,
-    };
-    return result;
-  }
-
   save = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.candidateService.save(req.body);
-      res.status(201).json(this.toPresenter(result));
+      res.status(201).json(toCandidatePresenter(result));
     } catch (e) {
       serverError(e, res);
     }
@@ -44,7 +27,7 @@ export class CandidateController {
       if (result == null) {
         res.status(404).send();
       } else {
-        res.status(200).json(this.toPresenter(result));
+        res.status(200).json(toCandidatePresenter(result));
       }
     } catch (e) {
       serverError(e, res);
@@ -69,7 +52,7 @@ export class CandidateController {
       const result = await this.candidateService.findAll();
       const presenters: CandidatePresenter[] = [];
       for (const m of result) {
-        presenters.push(this.toPresenter(m));
+        presenters.push(toCandidatePresenter(m));
       }
       res.status(200).json(presenters);
     } catch (e) {
@@ -83,7 +66,7 @@ export class CandidateController {
       if (result == null) {
         res.status(404).send();
       } else {
-        res.status(200).json(this.toPresenter(result));
+        res.status(200).json(toCandidatePresenter(result));
       }
     } catch (e) {
       serverError(e, res);
