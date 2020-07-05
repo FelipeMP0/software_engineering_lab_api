@@ -53,9 +53,18 @@ export class JobOpportunityController {
     }
   };
 
+  findDeleted = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.jobOpportunityService.findDeleted();
+      res.status(200).json(result);
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const result: boolean = await this.jobOpportunityService.deleteById(req.params.id);
+      const result: boolean = await this.jobOpportunityService.deleteById(req.params.id, req.body.deleteReason);
       if (result) {
         res.status(204).send();
       } else {

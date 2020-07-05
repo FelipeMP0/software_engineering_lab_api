@@ -8,4 +8,6 @@ export interface CandidateModel extends Document {
   links: string[];
   jobOpportunities: Types.Array<CandidateJobOpportunityModel>;
   base64Resume: string;
+  deleted: boolean;
+  deleteReason: string;
 }

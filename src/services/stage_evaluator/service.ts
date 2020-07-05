@@ -44,4 +44,19 @@ export class StageEvaluatorService {
     }
     return new Array<SkillModel>();
   }
+
+  async deleteByIds(ids: string[]): Promise<void> {
+    await this.stageEvaluator.deleteMany({ _id: { $in: ids } });
+  }
+
+  async deleteByStageId(id: string): Promise<void> {
+    const list = await this.stageEvaluator.find({ stage: new Object(id) });
+
+    const ids = [];
+    for (const l of list) {
+      ids.push(l._id);
+    }
+
+    this.deleteByIds(ids);
+  }
 }

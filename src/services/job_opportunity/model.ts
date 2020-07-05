@@ -7,4 +7,6 @@ export interface JobOpportunityModel extends Document {
   department: Department;
   description: string;
   stages: Types.Array<StageModel>;
+  deleted: boolean;
+  deleteReason: string;
 }

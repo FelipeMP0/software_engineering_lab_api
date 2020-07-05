@@ -9,6 +9,8 @@ export interface CandidatePresenter {
   links: string[];
   jobOpportunities: CandidateJobOpportunityModel[];
   hasResume: boolean;
+  deleted: boolean;
+  deleteReason: string;
 }
 
 export const toCandidatePresenter = (model: CandidateModel): CandidatePresenter => {
@@ -24,6 +26,8 @@ export const toCandidatePresenter = (model: CandidateModel): CandidatePresenter 
     links: model.links,
     jobOpportunities: model.jobOpportunities,
     hasResume: hasResume,
+    deleted: model.deleted,
+    deleteReason: model.deleteReason,
   };
   return result;
 };

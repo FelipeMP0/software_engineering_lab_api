@@ -27,11 +27,17 @@ export class CandidateJobOpportunityService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const exists: boolean = await this.candidateJobOpportunity.exists({ _id: id });
-    if (exists) {
+    const jobOpportunity = await this.candidateJobOpportunity.findById(id);
+    if (jobOpportunity != null) {
+      const idsToBeDeleted = [];
+      for (const j of jobOpportunity.stageEvaluatorList) {
+        idsToBeDeleted.push(j._id);
+      }
+      await this.stageEvaluatorService.deleteByIds(idsToBeDeleted);
       await this.candidateJobOpportunity.deleteOne({ _id: id });
+      return true;
     }
-    return exists;
+    return false;
   }
 
   async findWithStageEvaluatorId(stageEvaluatorId: string): Promise<CandidateJobOpportunityModel | null> {

@@ -13,6 +13,8 @@ const schema: Schema = new Schema(
       enum: [Department.HR, Department.SOFTWARE_DEVELOPMENT, Department.SALES],
     },
     stages: [{ type: Schema.Types.ObjectId, ref: 'STAGE' }],
+    deleted: { type: Boolean, default: false },
+    deleteReason: { type: String },
   },
   { timestamps: true },
 );

@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import { CandidateService } from './service';
 import { serverError } from '../../utils/errorHandler';
-import fs from 'fs';
 import { CandidatePresenter, toCandidatePresenter } from './presenter';
-import { CandidateModel } from './model';
 
 export class CandidateController {
   private candidateService: CandidateService;
@@ -36,7 +34,7 @@ export class CandidateController {
 
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const result: boolean = await this.candidateService.delete(req.params.id);
+      const result: boolean = await this.candidateService.delete(req.params.id, req.body.deleteReason);
       if (result) {
         res.status(204).send();
       } else {
@@ -50,6 +48,19 @@ export class CandidateController {
   findAll = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.candidateService.findAll();
+      const presenters: CandidatePresenter[] = [];
+      for (const m of result) {
+        presenters.push(toCandidatePresenter(m));
+      }
+      res.status(200).json(presenters);
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  findDeleted = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.candidateService.findDeleted();
       const presenters: CandidatePresenter[] = [];
       for (const m of result) {
         presenters.push(toCandidatePresenter(m));

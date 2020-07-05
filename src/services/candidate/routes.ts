@@ -17,6 +17,7 @@ export class CandidateRouter implements BaseRouter {
     const UPLOAD_PATH = 'uploads';
     const upload = multer({ dest: `${UPLOAD_PATH}/`, storage: multer.memoryStorage() });
     this.app.get('/candidates', this.candidateController.findAll);
+    this.app.get('/candidates/deleted', this.candidateController.findDeleted);
     this.app.get('/candidates/:id', this.candidateController.findById);
     this.app.post('/candidates', this.candidateController.save);
     this.app.put('/candidates/:id', this.candidateController.update);
