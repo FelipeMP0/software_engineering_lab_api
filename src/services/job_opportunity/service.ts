@@ -70,7 +70,7 @@ export class JobOpportunityService {
     return false;
   }
 
-  async saveStages(id: string, stage: StageModel): Promise<JobOpportunityModel | null> {
+  async saveStages(id: string, stage: StageModel): Promise<StageModel | null> {
     const jobOpportunity = await this.findById(id);
     if (jobOpportunity && jobOpportunity.deleted === false) {
       const newJob = {
@@ -82,9 +82,9 @@ export class JobOpportunityService {
       const savedStage = await this.stageService.save(stage);
       newJob.stages.push(savedStage);
       await this.jobOpportunity.update({ _id: id }, newJob);
-      return await this.findById(id);
+      return savedStage;
     }
-    return jobOpportunity;
+    return null;
   }
 
   async findWithStageId(stageId: string): Promise<JobOpportunityModel | null> {
