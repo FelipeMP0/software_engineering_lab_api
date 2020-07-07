@@ -80,9 +80,10 @@ export class JobOpportunityService {
         stages: jobOpportunity.stages,
       };
       const savedStage = await this.stageService.save(stage);
+      const foundStage = this.stageService.findById(savedStage._id);
       newJob.stages.push(savedStage);
       await this.jobOpportunity.update({ _id: id }, newJob);
-      return savedStage;
+      return foundStage;
     }
     return null;
   }

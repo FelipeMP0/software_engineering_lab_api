@@ -29,4 +29,8 @@ export class StageService {
     }
     return exists;
   }
+
+  async findById(id: string): Promise<StageModel | null> {
+    return await this.stage.findById(id).populate({ path: 'skills' });
+  }
 }
