@@ -11,8 +11,8 @@ export const handleCors = (router: Router): void => {
 };
 
 export const handleBodyRequestParsing = (router: Router): void => {
-  router.use(parser.urlencoded({ extended: true }));
-  router.use(parser.json());
+  router.use(parser.urlencoded({ extended: true, limit: '50mb' }));
+  router.use(parser.json({ limit: '50mb' }));
 };
 
 export const handleCompression = (router: Router): void => {
