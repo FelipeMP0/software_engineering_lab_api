@@ -51,8 +51,8 @@ export class JobOpportunityService {
         description: model.description,
         department: model.department,
         stages: job?.stages,
-        deleted: job.deleted,
-        deleteReason: job.deleteReason,
+        deleted: model.deleted,
+        deleteReason: model.deleteReason,
       };
       await this.jobOpportunity.update({ _id: id }, updateJob);
       return await this.findById(id);
@@ -158,8 +158,7 @@ export class JobOpportunityService {
 
   async deleteById(id: string, deleteReason: string): Promise<boolean> {
     const foundJobOpportunity = await this.jobOpportunity.findById(id);
-    console.log(foundJobOpportunity);
-    if (foundJobOpportunity != null && foundJobOpportunity.deleted === false) {
+    if (foundJobOpportunity != null) {
       for (const s of foundJobOpportunity.stages) {
         await this.stageService.delete(s._id);
         const list = await this.stageEvaluator.find({ stage: new Object(id) });
@@ -172,7 +171,6 @@ export class JobOpportunityService {
       }
       foundJobOpportunity.deleted = true;
       foundJobOpportunity.deleteReason = deleteReason;
-      console.log(foundJobOpportunity);
       await this.update(foundJobOpportunity._id, foundJobOpportunity);
       return true;
     }
