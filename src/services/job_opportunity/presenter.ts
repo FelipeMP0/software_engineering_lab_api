@@ -10,6 +10,7 @@ export interface JobOpportunityResultPresenter {
 }
 
 export interface CandidateResultPresenter {
+  _id: string;
   name: string;
   cpf: string;
   address: string;

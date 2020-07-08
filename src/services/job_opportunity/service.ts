@@ -129,6 +129,7 @@ export class JobOpportunityService {
           };
           console.log(c.foundCandidate);
           const candidatePresenter: CandidateResultPresenter = {
+            _id: c.foundCandidate._id,
             name: c.foundCandidate.name,
             cpf: c.foundCandidate.cpf,
             address: c.foundCandidate.address,
