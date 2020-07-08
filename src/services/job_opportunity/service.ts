@@ -38,8 +38,8 @@ export class JobOpportunityService {
         description: model.description,
         department: model.department,
         stages: job?.stages,
-        deleted: model.deleted,
-        deleteReason: model.deleteReason,
+        deleted: job.deleted,
+        deleteReason: job.deleteReason,
       };
       await this.jobOpportunity.update({ _id: id }, updateJob);
       return await this.findById(id);
