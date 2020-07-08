@@ -53,6 +53,14 @@ export class JobOpportunityController {
     }
   };
 
+  findResultsById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.jobOpportunityService.findResultsById(req.params.id);
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
   findDeleted = async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await this.jobOpportunityService.findDeleted();

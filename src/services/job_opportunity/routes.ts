@@ -18,6 +18,7 @@ export class JobOpportunityRouter implements BaseRouter {
     this.app.get('/job-opportunities', this.jobOpportunityController.findAll);
     this.app.get('/job-opportunities/deleted', this.jobOpportunityController.findDeleted);
     this.app.get('/job-opportunities/:id', this.jobOpportunityController.findById);
+    this.app.get('/job-opportunities/:id/results', this.jobOpportunityController.findResultsById);
     this.app.delete('/job-opportunities/:id', this.jobOpportunityController.delete);
     this.app.get('/job-opportunities/:id/stages', this.jobOpportunityController.findStagesById);
     this.app.post('/job-opportunities/:id/stages', this.jobOpportunityController.saveStages);

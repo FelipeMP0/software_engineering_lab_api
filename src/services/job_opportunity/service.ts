@@ -5,16 +5,25 @@ import { StageModel } from '../stage/model';
 import { StageService } from '../stage/service';
 import { StageEvaluatorModel } from '../stage_evaluator/model';
 import { stageEvaluatorSchema } from '../stage_evaluator/schema';
+import { CandidateJobOpportunityService } from '../candidate_job_opportunity/service';
+import { candidateSchema } from '../candidate/schema';
+import { CandidateModel } from '../candidate/model';
+import { candidateJobOpportunitySchema } from '../candidate_job_opportunity/schema';
+import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
 
 export class JobOpportunityService {
   private jobOpportunity: Model<JobOpportunityModel>;
   private stageService: StageService;
   private stageEvaluator: Model<StageEvaluatorModel>;
+  private candidateJobOpportunity: Model<CandidateJobOpportunityModel>;
+  private candidate: Model<CandidateModel>;
 
   constructor() {
     this.jobOpportunity = jobOpportunitySchema;
     this.stageService = new StageService();
     this.stageEvaluator = stageEvaluatorSchema;
+    this.candidateJobOpportunity = candidateJobOpportunitySchema;
+    this.candidate = candidateSchema;
   }
 
   async save(model: JobOpportunityModel): Promise<JobOpportunityModel> {
@@ -23,12 +32,14 @@ export class JobOpportunityService {
 
   async update(id: string, model: JobOpportunityModel): Promise<JobOpportunityModel | null | undefined> {
     const job = await this.findById(id);
-    if (job && job.deleted === false) {
+    if (job) {
       const updateJob = {
         name: model.name,
         description: model.description,
         department: model.department,
         stages: job?.stages,
+        deleted: model.deleted,
+        deleteReason: model.deleteReason,
       };
       await this.jobOpportunity.update({ _id: id }, updateJob);
       return await this.findById(id);
@@ -45,12 +56,26 @@ export class JobOpportunityService {
       .populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
+  async findResultsById(id: string): Promise<JobOpportunityModel | null> {
+    const candidateJobOpportunities = await this.candidateJobOpportunity.find({
+      jobOpportunity: new Object(id),
+    });
+    const candidates = [];
+
+    for (const c of candidateJobOpportunities) {
+      const foundCandidate = await this.candidate.findOne({ jobOpportunities: c._id });
+      candidates.push(foundCandidate);
+    }
+    return null;
+  }
+
   async findDeleted(): Promise<JobOpportunityModel[]> {
     return await this.jobOpportunity.find({ deleted: true }).populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
   async deleteById(id: string, deleteReason: string): Promise<boolean> {
     const foundJobOpportunity = await this.jobOpportunity.findById(id);
+    console.log(foundJobOpportunity);
     if (foundJobOpportunity != null && foundJobOpportunity.deleted === false) {
       for (const s of foundJobOpportunity.stages) {
         await this.stageService.delete(s._id);
@@ -64,6 +89,7 @@ export class JobOpportunityService {
       }
       foundJobOpportunity.deleted = true;
       foundJobOpportunity.deleteReason = deleteReason;
+      console.log(foundJobOpportunity);
       await this.update(foundJobOpportunity._id, foundJobOpportunity);
       return true;
     }
