@@ -25,4 +25,9 @@ export class UserService {
   async findAllEvaluators(): Promise<UserModel[]> {
     return await this.user.find();
   }
+
+  async findByToken(authToken: string): Promise<UserModel | null> {
+    authToken = authToken.replace('Basic ', '');
+    return this.authenticate(authToken);
+  }
 }

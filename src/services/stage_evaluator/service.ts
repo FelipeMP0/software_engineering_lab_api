@@ -27,7 +27,7 @@ export class StageEvaluatorService {
 
     if (user != null) {
       return await this.stageEvaluator
-        .find({ evaluator: user._id })
+        .find({ evaluator: user._id, done: false })
         .populate({ path: 'stage', populate: { path: 'skills' } });
     }
   }
@@ -58,5 +58,15 @@ export class StageEvaluatorService {
     }
 
     this.deleteByIds(ids);
+  }
+
+  async markAsDone(id: StageEvaluatorModel): Promise<void> {
+    const foundStage = await this.stageEvaluator.findById(id);
+
+    console.log(foundStage);
+    if (foundStage != null) {
+      foundStage.done = true;
+      await this.stageEvaluator.update({ _id: id }, foundStage);
+    }
   }
 }

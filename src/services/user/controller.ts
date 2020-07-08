@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from './service';
 import { serverError } from '../../utils/errorHandler';
-import { UserPresenter } from './presenter';
+import { UserPresenter, toUserPresenter } from './presenter';
 
 export class UserController {
   private userService: UserService;
@@ -23,14 +23,22 @@ export class UserController {
     try {
       const users = await this.userService.findAllEvaluators();
       const result: UserPresenter[] = users.map(function (item, index) {
-        return {
-          _id: item._id,
-          username: item.username,
-          role: item.role,
-          department: item.department,
-        };
+        return toUserPresenter(item);
       });
       res.status(200).json(result);
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  findByToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const user = await this.userService.findByToken(req.headers['authorization']!);
+      if (user != null) {
+        res.status(200).json(toUserPresenter(user));
+      } else {
+        res.status(404).send();
+      }
     } catch (e) {
       serverError(e, res);
     }

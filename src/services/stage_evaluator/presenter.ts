@@ -11,6 +11,7 @@ export interface StageEvaluatorPresenter {
   evaluator: UserModel;
   jobOpportunity: JobOpportunityModel;
   candidate: CandidatePresenter;
+  done: boolean;
 }
 
 export const toStageEvaluatorPresenter = (
@@ -24,6 +25,7 @@ export const toStageEvaluatorPresenter = (
     evaluator: stageEvaluator.evaluator,
     jobOpportunity: jobOpportunity,
     candidate: toCandidatePresenter(candidate),
+    done: stageEvaluator.done,
   };
   return presenter;
 };

@@ -5,4 +5,5 @@ import { UserModel } from '../user/model';
 export interface StageEvaluatorModel extends Document {
   stage: StageModel;
   evaluator: UserModel;
+  done: boolean;
 }
