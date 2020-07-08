@@ -14,7 +14,7 @@ export interface CandidateResultPresenter {
   cpf: string;
   address: string;
   links: string[];
-  jobOpportunities: CandidateJobOpportunityResultPresenter[];
+  jobOpportunities: CandidateJobOpportunityResultPresenter;
 }
 
 export interface CandidateJobOpportunityResultPresenter {

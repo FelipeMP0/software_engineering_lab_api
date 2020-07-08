@@ -5,11 +5,22 @@ import { StageModel } from '../stage/model';
 import { StageService } from '../stage/service';
 import { StageEvaluatorModel } from '../stage_evaluator/model';
 import { stageEvaluatorSchema } from '../stage_evaluator/schema';
-import { CandidateJobOpportunityService } from '../candidate_job_opportunity/service';
 import { candidateSchema } from '../candidate/schema';
 import { CandidateModel } from '../candidate/model';
 import { candidateJobOpportunitySchema } from '../candidate_job_opportunity/schema';
 import { CandidateJobOpportunityModel } from '../candidate_job_opportunity/model';
+import {
+  JobOpportunityResultPresenter,
+  CandidateResultPresenter,
+  CandidateJobOpportunityResultPresenter,
+  StageEvaluatorResultPresenter,
+  StageResultPresenter,
+  SkillScoreResultPresenter,
+  SkillResultPresenter,
+} from './presenter';
+import { toUserPresenter } from '../user/presenter';
+import { SkillEvaluationModel } from '../skill_evaluation/model';
+import { skillEvaluationSchema } from '../skill_evaluation/schema';
 
 export class JobOpportunityService {
   private jobOpportunity: Model<JobOpportunityModel>;
@@ -17,6 +28,7 @@ export class JobOpportunityService {
   private stageEvaluator: Model<StageEvaluatorModel>;
   private candidateJobOpportunity: Model<CandidateJobOpportunityModel>;
   private candidate: Model<CandidateModel>;
+  private skillEvalutation: Model<SkillEvaluationModel>;
 
   constructor() {
     this.jobOpportunity = jobOpportunitySchema;
@@ -24,6 +36,7 @@ export class JobOpportunityService {
     this.stageEvaluator = stageEvaluatorSchema;
     this.candidateJobOpportunity = candidateJobOpportunitySchema;
     this.candidate = candidateSchema;
+    this.skillEvalutation = skillEvaluationSchema;
   }
 
   async save(model: JobOpportunityModel): Promise<JobOpportunityModel> {
@@ -56,15 +69,84 @@ export class JobOpportunityService {
       .populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
-  async findResultsById(id: string): Promise<JobOpportunityModel | null> {
-    const candidateJobOpportunities = await this.candidateJobOpportunity.find({
-      jobOpportunity: new Object(id),
-    });
-    const candidates = [];
+  async findResultsById(id: string): Promise<JobOpportunityResultPresenter | null> {
+    const foundJobOpportunity = await this.findById(id);
+    if (foundJobOpportunity != null) {
+      const candidateJobOpportunities = await this.candidateJobOpportunity
+        .find({
+          jobOpportunity: new Object(id),
+        })
+        .populate({ path: 'stageEvaluatorList', populate: { path: 'stage evaluator' } });
+      const candidates = [];
 
-    for (const c of candidateJobOpportunities) {
-      const foundCandidate = await this.candidate.findOne({ jobOpportunities: c._id });
-      candidates.push(foundCandidate);
+      for (const c of candidateJobOpportunities) {
+        const foundCandidate = await this.candidate.findOne({ jobOpportunities: c._id }).populate({
+          path: 'jobOpportunity',
+          populate: { path: 'stageEvaluatorList', populate: { path: 'stage evaluator' } },
+        });
+        candidates.push({ foundCandidate, jobOpportunity: c });
+      }
+
+      const candidatesPresenters: CandidateResultPresenter[] = [];
+
+      for (const c of candidates) {
+        if (c != null && c.foundCandidate != null && c.jobOpportunity != null) {
+          const stageEvaluatorPresenters: StageEvaluatorResultPresenter[] = [];
+          for (const s of c.jobOpportunity.stageEvaluatorList) {
+            const skillEvaluation = await this.skillEvalutation
+              .findOne({ stageEvaluator: s._id })
+              .populate({ path: 'skillScoreList', populate: { path: 'skill' } });
+            console.log(c);
+            const stagePresenter: StageResultPresenter = {
+              name: s.stage.name,
+              description: s.stage.description,
+            };
+            const skillEvaluationPresenters: SkillScoreResultPresenter[] = [];
+            if (skillEvaluation != null) {
+              for (const sk of skillEvaluation.skillScoreList) {
+                console.log(sk.skill);
+                const skillPresenter: SkillResultPresenter = {
+                  name: sk.skill.name,
+                  description: sk.skill.description,
+                };
+                const skillEvaluationPresenter: SkillScoreResultPresenter = {
+                  skill: skillPresenter,
+                  score: sk.score,
+                };
+                skillEvaluationPresenters.push(skillEvaluationPresenter);
+              }
+            }
+            const stageEvaluatorPresenter: StageEvaluatorResultPresenter = {
+              stage: stagePresenter,
+              evaluator: toUserPresenter(s.evaluator),
+              done: s.done,
+              skillEvaluations: skillEvaluationPresenters,
+            };
+            stageEvaluatorPresenters.push(stageEvaluatorPresenter);
+          }
+          const candidateJobOpportunityPresenter: CandidateJobOpportunityResultPresenter = {
+            stageEvaluatorList: stageEvaluatorPresenters,
+          };
+          console.log(c.foundCandidate);
+          const candidatePresenter: CandidateResultPresenter = {
+            name: c.foundCandidate.name,
+            cpf: c.foundCandidate.cpf,
+            address: c.foundCandidate.address,
+            links: c.foundCandidate.links,
+            jobOpportunities: candidateJobOpportunityPresenter,
+          };
+          candidatesPresenters.push(candidatePresenter);
+        }
+      }
+
+      const result: JobOpportunityResultPresenter = {
+        _id: foundJobOpportunity._id,
+        name: foundJobOpportunity.name,
+        department: foundJobOpportunity.department,
+        description: foundJobOpportunity.description,
+        candidates: candidatesPresenters,
+      };
+      return result;
     }
     return null;
   }
