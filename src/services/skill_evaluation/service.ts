@@ -11,7 +11,7 @@ export class SkillEvaluationService {
     this.skillScore = skillScoreSchema;
   }
 
-  async save(model: SkillEvaluationModel): Promise<SkillEvaluationModel> {
+  async save(model: SkillEvaluationModel): Promise<SkillEvaluationModel | null> {
     const skillScoreList = model.skillScoreList;
     const savedSkillScoreIdList = [];
     for (const index in skillScoreList) {
@@ -22,6 +22,9 @@ export class SkillEvaluationService {
       stageEvaluator: model.stageEvaluator,
       skillScoreList: savedSkillScoreIdList,
     };
-    return await new this.skillEvaluation(newModel).save();
+    const saved = await new this.skillEvaluation(newModel).save();
+    return await this.skillEvaluation
+      .findById(saved._id)
+      .populate({ path: 'skillScoreList', populate: { path: 'skill' } });
   }
 }
