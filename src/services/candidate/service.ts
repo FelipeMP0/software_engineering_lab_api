@@ -51,7 +51,7 @@ export class CandidateService {
 
   async activate(id: string): Promise<boolean> {
     const foundCandidate = await this.candidate.findById(id);
-    if (foundCandidate != null && foundCandidate.deleted === false) {
+    if (foundCandidate != null) {
       foundCandidate.deleteReason = '';
       foundCandidate.deleted = false;
       await this.update(foundCandidate._id, foundCandidate);
