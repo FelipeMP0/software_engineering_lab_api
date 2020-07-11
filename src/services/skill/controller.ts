@@ -47,8 +47,21 @@ export class SkillController {
 
   deleteById = async (req: Request, res: Response): Promise<void> => {
     try {
-      await this.skillService.deleteById(req.params.id);
+      await this.skillService.deleteById(req.params.id, req.body.deleteReason);
       res.status(204).send();
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  activate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.skillService.activate(req.params.id);
+      if (result != null) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).send();
+      }
     } catch (e) {
       serverError(e, res);
     }

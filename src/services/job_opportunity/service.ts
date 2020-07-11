@@ -45,14 +45,15 @@ export class JobOpportunityService {
 
   async update(id: string, model: JobOpportunityModel): Promise<JobOpportunityModel | null | undefined> {
     const job = await this.findById(id);
-    if (job) {
+    if (job != null) {
       const updateJob = {
         name: model.name,
         description: model.description,
         department: model.department,
         stages: job?.stages,
-        deleted: model.deleted,
-        deleteReason: model.deleteReason,
+        deleted: model.deleted != null ? model.deleted : job.deleted,
+        deleteReason: model.deleteReason != null ? model.deleteReason : job.deleteReason,
+        finished: model.finished != null ? model.finished : job.finished,
       };
       await this.jobOpportunity.update({ _id: id }, updateJob);
       return await this.findById(id);
@@ -64,9 +65,7 @@ export class JobOpportunityService {
   }
 
   async findAll(): Promise<JobOpportunityModel[]> {
-    return await this.jobOpportunity
-      .find({ deleted: false })
-      .populate({ path: 'stages', populate: { path: 'skills' } });
+    return await this.jobOpportunity.find().populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
   async findResultsById(id: string): Promise<JobOpportunityResultPresenter | null> {
@@ -177,6 +176,27 @@ export class JobOpportunityService {
     return false;
   }
 
+  async activate(id: string): Promise<boolean> {
+    const foundJobOpportunity = await this.jobOpportunity.findById(id);
+    if (foundJobOpportunity != null) {
+      foundJobOpportunity.deleted = false;
+      foundJobOpportunity.deleteReason = '';
+      await this.update(foundJobOpportunity._id, foundJobOpportunity);
+      return true;
+    }
+    return false;
+  }
+
+  async finish(id: string): Promise<boolean> {
+    const foundJobOpportunity = await this.jobOpportunity.findById(id);
+    if (foundJobOpportunity != null) {
+      foundJobOpportunity.finished = false;
+      await this.update(foundJobOpportunity._id, foundJobOpportunity);
+      return true;
+    }
+    return false;
+  }
+
   async saveStages(id: string, stage: StageModel): Promise<StageModel | null> {
     const jobOpportunity = await this.findById(id);
     if (jobOpportunity && jobOpportunity.deleted === false) {
@@ -196,6 +216,6 @@ export class JobOpportunityService {
   }
 
   async findWithStageId(stageId: string): Promise<JobOpportunityModel | null> {
-    return await this.jobOpportunity.findOne({ stages: stageId, deleted: false });
+    return await this.jobOpportunity.findOne({ stages: stageId });
   }
 }

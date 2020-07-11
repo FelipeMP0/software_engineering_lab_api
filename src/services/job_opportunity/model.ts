@@ -9,4 +9,5 @@ export interface JobOpportunityModel extends Document {
   stages: Types.Array<StageModel>;
   deleted: boolean;
   deleteReason: string;
+  finished: boolean;
 }

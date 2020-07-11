@@ -136,4 +136,17 @@ export class CandidateController {
       serverError(e, res);
     }
   };
+
+  activate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.candidateService.activate(req.params.id);
+      if (result != null) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).send();
+      }
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
 }

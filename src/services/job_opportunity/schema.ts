@@ -15,6 +15,7 @@ const schema: Schema = new Schema(
     stages: [{ type: Schema.Types.ObjectId, ref: 'STAGE' }],
     deleted: { type: Boolean, default: false },
     deleteReason: { type: String },
+    finished: { type: Boolean, default: false, required: true },
   },
   { timestamps: true },
 );

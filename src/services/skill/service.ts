@@ -14,11 +14,13 @@ export class SkillService {
   }
 
   async update(id: string, model: SkillModel): Promise<SkillModel | null | undefined> {
-    const skill = this.findById(id);
-    if (skill) {
+    const skill = await this.findById(id);
+    if (skill != null) {
       const updateSkill = {
         name: model.name,
         description: model.description,
+        deleted: model.deleted != null ? model.deleted : skill.deleted,
+        deleteReason: model.deleteReason != null ? model.deleteReason : skill.deleteReason,
       };
       await this.skill.update({ _id: id }, updateSkill);
       return await this.findById(id);
@@ -33,7 +35,25 @@ export class SkillService {
     return await this.skill.find();
   }
 
-  async deleteById(id: string): Promise<void> {
-    await this.skill.deleteOne({ _id: id });
+  async deleteById(id: string, deleteReason: string): Promise<boolean> {
+    const foundSkill = await this.skill.findById(id);
+    if (foundSkill != null) {
+      foundSkill.deleted = true;
+      foundSkill.deleteReason = deleteReason;
+      await this.update(foundSkill._id, foundSkill);
+      return true;
+    }
+    return false;
+  }
+
+  async activate(id: string): Promise<boolean> {
+    const foundSkill = await this.skill.findById(id);
+    if (foundSkill != null) {
+      foundSkill.deleted = false;
+      foundSkill.deleteReason = '';
+      await this.update(foundSkill._id, foundSkill);
+      return true;
+    }
+    return false;
   }
 }

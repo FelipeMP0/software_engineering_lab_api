@@ -18,5 +18,6 @@ export class SkillRouter implements BaseRouter {
     this.app.get('/skills', this.skillController.findAll);
     this.app.get('/skills/:id', this.skillController.findById);
     this.app.delete('/skills/:id', this.skillController.deleteById);
+    this.app.put('/skills/:id/activate', this.skillController.activate);
   }
 }

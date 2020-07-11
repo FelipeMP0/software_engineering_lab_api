@@ -113,4 +113,30 @@ export class JobOpportunityController {
       serverError(e, res);
     }
   };
+
+  activate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.jobOpportunityService.activate(req.params.id);
+      if (result != null) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).send();
+      }
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
+
+  finish = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const result = await this.jobOpportunityService.finish(req.params.id);
+      if (result != null) {
+        res.status(200).json(result);
+      } else {
+        res.status(400).send();
+      }
+    } catch (e) {
+      serverError(e, res);
+    }
+  };
 }

@@ -19,8 +19,18 @@ export class CandidateService {
 
   async update(id: string, model: CandidateModel): Promise<CandidateModel | null> {
     const foundCandidate = await this.candidate.findById(id);
-    if (foundCandidate && foundCandidate.deleted === false) {
-      await this.candidate.update({ _id: id }, model);
+    if (foundCandidate != null) {
+      const updatedCandidate = {
+        name: model.name,
+        cpf: model.cpf,
+        address: model.address,
+        links: model.links,
+        jobOpportunities: foundCandidate.jobOpportunities,
+        base64Resume: foundCandidate.base64Resume,
+        deleted: model.deleted != null ? model.deleted : foundCandidate.deleted,
+        deleteReason: model.deleteReason != null ? model.deleteReason : foundCandidate.deleteReason,
+      };
+      await this.candidate.update({ _id: id }, updatedCandidate);
     }
     return await this.candidate.findById(id);
   }
@@ -39,8 +49,19 @@ export class CandidateService {
     return false;
   }
 
+  async activate(id: string): Promise<boolean> {
+    const foundCandidate = await this.candidate.findById(id);
+    if (foundCandidate != null && foundCandidate.deleted === false) {
+      foundCandidate.deleteReason = '';
+      foundCandidate.deleted = false;
+      await this.update(foundCandidate._id, foundCandidate);
+      return true;
+    }
+    return false;
+  }
+
   async findAll(): Promise<CandidateModel[]> {
-    return await this.candidate.find({ deleted: false }).populate({
+    return await this.candidate.find().populate({
       path: 'jobOpportunities',
       populate: {
         path: 'jobOpportunity stageEvaluatorList',
