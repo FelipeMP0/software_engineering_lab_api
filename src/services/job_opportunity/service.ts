@@ -190,7 +190,7 @@ export class JobOpportunityService {
   async finish(id: string): Promise<boolean> {
     const foundJobOpportunity = await this.jobOpportunity.findById(id);
     if (foundJobOpportunity != null) {
-      foundJobOpportunity.finished = false;
+      foundJobOpportunity.finished = true;
       await this.update(foundJobOpportunity._id, foundJobOpportunity);
       return true;
     }
