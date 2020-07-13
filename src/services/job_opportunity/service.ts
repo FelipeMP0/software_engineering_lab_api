@@ -159,7 +159,6 @@ export class JobOpportunityService {
     const foundJobOpportunity = await this.jobOpportunity.findById(id);
     if (foundJobOpportunity != null) {
       for (const s of foundJobOpportunity.stages) {
-        await this.stageService.delete(s._id);
         const list = await this.stageEvaluator.find({ stage: new Object(id) });
 
         const ids = [];
