@@ -62,6 +62,7 @@ export class JobOpportunityService {
   }
 
   async findById(id: string): Promise<JobOpportunityModel | null> {
+    console.log();
     return await this.jobOpportunity.findById(id).populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
