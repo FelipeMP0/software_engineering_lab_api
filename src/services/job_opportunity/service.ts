@@ -17,6 +17,7 @@ import {
   StageResultPresenter,
   SkillScoreResultPresenter,
   SkillResultPresenter,
+  JobOpportunityPresenter,
 } from './presenter';
 import { toUserPresenter } from '../user/presenter';
 import { SkillEvaluationModel } from '../skill_evaluation/model';
@@ -64,8 +65,32 @@ export class JobOpportunityService {
     return await this.jobOpportunity.findById(id).populate({ path: 'stages', populate: { path: 'skills' } });
   }
 
-  async findAll(): Promise<JobOpportunityModel[]> {
-    return await this.jobOpportunity.find().populate({ path: 'stages', populate: { path: 'skills' } });
+  async findAll(): Promise<JobOpportunityPresenter[]> {
+    const jobs = await this.jobOpportunity.find().populate({ path: 'stages', populate: { path: 'skills' } });
+
+    const newJobs = [];
+    for (const j of jobs) {
+      const stageIds = [];
+      for (const s of j.stages) {
+        stageIds.push(s._id);
+      }
+      const canFinish1 = await this.stageEvaluator.exists({ _id: { $in: stageIds }, done: false });
+
+      const a: JobOpportunityPresenter = {
+        _id: j._id,
+        name: j.name,
+        department: j.department,
+        description: j.description,
+        stages: j.stages,
+        deleted: j.deleted,
+        deleteReason: j.deleteReason,
+        finished: j.finished,
+        canFinish: !canFinish1,
+      };
+
+      newJobs.push(a);
+    }
+    return newJobs;
   }
 
   async findResultsById(id: string): Promise<JobOpportunityResultPresenter | null> {

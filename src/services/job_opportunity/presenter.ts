@@ -1,5 +1,18 @@
 import Department from '../department/model';
 import { UserPresenter } from '../user/presenter';
+import { StageModel } from '../stage/model';
+
+export interface JobOpportunityPresenter {
+  _id: string;
+  name: string;
+  department: Department;
+  description: string;
+  stages: StageModel[];
+  deleted: boolean;
+  deleteReason: string;
+  finished: boolean;
+  canFinish: boolean;
+}
 
 export interface JobOpportunityResultPresenter {
   _id: string;
